@@ -17,10 +17,13 @@
 
         <div class="right-link">
         <div class="user-profile">
-          <router-link to="/profile">👨‍🎓 Profile</router-link>
-          <template v-if="userStore.isLoggedIn">
-            <span class="welcome-text">Welcome, {{ userStore.userProfile?.displayName }}!</span>
+          <template v-if="userStore.isLoggedIn && userStore.userProfile?.displayName">
+            <router-link to="/profile">👨‍🎓 Profile</router-link>
+            <span class="welcome-text">Welcome, {{ userStore.userProfile.displayName }}!</span>
             <a href="#" @click.prevent="handleLogout" class="logout-link">Logout</a>
+          </template>
+          <template v-else>
+            <router-link to="/login" class="login-btn">Login</router-link>
           </template>
         </div>
         </div>
@@ -41,7 +44,7 @@ const handleLogout = async () => {
     await userStore.logout()
     router.push('/login')
   } catch (error) {
-    console.error('退出失败:', error)
+    console.error('Logout failed:', error)
   }
 }
 </script>
@@ -64,10 +67,11 @@ nav {
   align-items: center;
   justify-content: space-between;
   list-style: none;
-  margin: 20px;
+  margin: 0;
   padding: 0 20px;
-  height: 100px;
-  width: 96%;
+  height: 80px;
+  width: 100%;
+  max-width: 1400px;
   margin: auto;
   overflow: hidden;
 }
@@ -80,33 +84,33 @@ nav {
 }
 
 .nav-items .left-link a {
-  font-size:1.5rem;
-  margin: 30px; 
+  font-size: 1.1rem;
+  margin: 0 15px;
+  white-space: nowrap;
 }
 
 .nav-items .right-link a {
   font-size: 1rem;
+  white-space: nowrap;
 }
 
 .nav-left {
   display: flex;
   align-items: center;
-  gap: 20px;
+  gap: 10px;
 }
 
 .user-profile {
   display: flex;
   align-items: center;
-  gap: 20px;
+  gap: 15px;
   margin-left: auto;
 }
 
 .logo {
-  height: 210px;
+  height: 60px;
   width: auto;
-  margin-bottom: -50px;
-  margin-right: 10px;
-  margin-left: -50px;
+  margin: 0 10px;
 }
 
 a, .welcome-text {
@@ -127,5 +131,18 @@ a:hover {
 
 .logout-link:hover {
   color: #ffd700;
+}
+
+.login-btn {
+  background-color: #ffeb3b;
+  color: #333 !important;
+  padding: 8px 20px;
+  border-radius: 20px;
+  transition: all 0.3s ease;
+}
+
+.login-btn:hover {
+  background-color: #ffd700;
+  color: #000 !important;
 }
 </style> 
