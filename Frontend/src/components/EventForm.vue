@@ -102,12 +102,14 @@
 import { ref, computed } from 'vue';
 import { useRouter } from 'vue-router';
 import { useUserStore } from '../stores/user';
+import { useEventStore } from '../stores/event';
 import { collection, addDoc } from 'firebase/firestore';
 import { db } from '../firebase/config';
 import type { Event } from '../types/event';
 
 const router = useRouter();
 const userStore = useUserStore();
+const eventStore = useEventStore();
 const isSubmitting = ref(false);
 
 const formData = ref({
@@ -117,7 +119,7 @@ const formData = ref({
   time: '',
   location: '',
   category: '',
-  maxParticipants: undefined as number | undefined,
+  maxParticipants: null as number | null, // 默认值为 null
   tags: [] as string[]
 });
 
@@ -130,7 +132,7 @@ const tagsInput = computed({
 
 const handleSubmit = async () => {
   if (!userStore.userProfile) {
-    alert('请先登录');
+    alert('Please log in to publish an event!');
     return;
   }
 
@@ -139,18 +141,27 @@ const handleSubmit = async () => {
     const eventData: Omit<Event, 'id'> = {
       ...formData.value,
       organizerId: userStore.userProfile.uid,
-      organizerName: userStore.userProfile.displayName || '匿名用户',
+      organizerName: userStore.userProfile.displayName || 'Anonymous',
       organizerAvatar: userStore.userProfile.photoURL || '',
       createdAt: new Date().toISOString(),
       participants: []
     };
 
+    // 如果 maxParticipants 为 null，则移除该字段
+    if (eventData.maxParticipants === null) {
+      delete eventData.maxParticipants;
+    }
+
     await addDoc(collection(db, 'events'), eventData);
-    alert('sucessfully publish!');
+    alert('Successfully published!');
+
+    // 更新全局事件列表
+    await eventStore.fetchEvents();
+
     router.push('/events');
   } catch (error) {
-    console.error('OOh…You Fail', error);
-    alert('OOh…You Fail');
+    console.error('Failed to publish event:', error);
+    alert('Failed to publish event.');
   } finally {
     isSubmitting.value = false;
   }
@@ -226,4 +237,4 @@ textarea {
   background: #ccc;
   cursor: not-allowed;
 }
-</style> 
+</style>

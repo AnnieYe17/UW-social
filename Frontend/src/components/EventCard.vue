@@ -1,6 +1,6 @@
 <template>
   <div class="card event-card">
-    <img :src="event.imageUrl ? event.imageUrl : '/images/default-event.jpg'" alt="event.title" />
+    <img :src="event.imageUrl ? event.imageUrl : 'public/images/default-event.jpg'" alt="event.title" />
     <h3>{{ event.title }}</h3>
     <p>📅 Date: {{ formatDate(event.date) }}</p>
     <p>📍 Location: {{ event.location }}</p>
@@ -25,7 +25,7 @@ import type { Event } from '../types/event'
 
 const props = defineProps<{
   event: Event
-}>()
+}>();
 
 const userStore = useUserStore()
 
@@ -35,14 +35,15 @@ const isParticipant = computed(() => {
 })
 
 const isFull = computed(() => {
-  return props.event.maxParticipants && 
+  return props.event.maxParticipants !== undefined &&
+         props.event.maxParticipants !== null &&
          Array.isArray(props.event.participants) &&
-         props.event.participants.length >= props.event.maxParticipants
-})
+         props.event.participants.length >= props.event.maxParticipants;
+});
 
 const getButtonText = computed(() => {
-  if (isFull.value) return '已满员'
-  if (isParticipant.value) return '已参加'
+  if (isFull.value) return 'Full'
+  if (isParticipant.value) return 'Joined'
   return 'Quickly Join in'
 })
 
@@ -137,4 +138,4 @@ const goToReview = (eventId: string) => {
 .review-btn:hover {
   background-color: #e0e0e0;
 }
-</style> 
+</style>

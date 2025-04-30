@@ -1,6 +1,6 @@
 <template>
   <div>
-    <nav-bar></nav-bar>
+    <NavBar></NavBar>
     <!-- 仅在首页渲染 Welcome -->
     <div v-if="$route.path === '/'" class="welcome-container">
       <Welcome />
@@ -13,8 +13,9 @@
 </template>
 
 <script setup lang="ts">
-import Welcome from '@/components/Welcome.vue';  // 修正路径
-import EventList from '@/components/EventList.vue';  // 统一用绝对路径
+import NavBar from '@/components/Navbar.vue'; // 确保路径正确
+import Welcome from '@/components/Welcome.vue';
+import EventList from '@/components/EventList.vue';
 </script>
 
 <style scoped>
@@ -38,4 +39,4 @@ import EventList from '@/components/EventList.vue';  // 统一用绝对路径
   margin-bottom: 0.5rem;
   font-size: 1.5rem;
 }
-</style> 
+</style>

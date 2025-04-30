@@ -1,53 +1,23 @@
 <template>
   <div class="event-list">
-    <div v-if="loading" class="loading">
-      加载中...
-    </div>
-    <div v-else-if="events.length === 0" class="no-events">
-      暂无活动
-    </div>
-    <div v-if="events.length"></div>
+    <div v-if="eventStore.events.length === 0" class="loading">Loading events...</div>
     <div v-else class="events-grid">
-      <EventCard
-        v-for="event in events"
-        :key="event.id"
-        :event="event"
-      />
+      <EventCard v-for="event in eventStore.events" :key="event.id" :event="event" />
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
-import { collection, query, orderBy, getDocs } from 'firebase/firestore';
-import { db } from '../firebase/config';
+import { onMounted } from 'vue';
+import { useEventStore } from '@/stores/event';
 import EventCard from './EventCard.vue';
-import type { Event } from '../types/event';
 
-const events = ref<Event[]>([]);
-const loading = ref(true);
-
-const fetchEvents = async () => {
-  try {
-    const eventsQuery = query(
-      collection(db, 'events'),
-      orderBy('createdAt', 'desc')
-    );
-    
-    const querySnapshot = await getDocs(eventsQuery);
-    events.value = querySnapshot.docs.map(doc => ({
-      id: doc.id,
-      ...doc.data()
-    })) as Event[];
-  } catch (error) {
-    console.error('获取活动列表失败:', error);
-  } finally {
-    loading.value = false;
-  }
-};
+const eventStore = useEventStore();
 
 onMounted(() => {
-  fetchEvents();
+  if (eventStore.events.length === 0) {
+    eventStore.fetchEvents();
+  }
 });
 </script>
 
@@ -82,4 +52,4 @@ onMounted(() => {
     grid-template-columns: repeat(3, 1fr);
   }
 }
-</style> 
+</style>
