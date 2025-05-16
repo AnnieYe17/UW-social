@@ -2,7 +2,7 @@
   <div v-if="isHomePage" class="welcome-container">
     <div class="main-content">
       <h1>Welcome to UW Social! 🎓</h1>
-      <p>This is your social hub – find events, make friends, and share your ideas.</p>
+      <p>This is your social hub - find events, make friends, and share your ideas.</p>
     </div>
   </div>
 </template>

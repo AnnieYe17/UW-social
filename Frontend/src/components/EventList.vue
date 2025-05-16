@@ -2,7 +2,12 @@
   <div class="event-list">
     <div v-if="eventStore.events.length === 0" class="loading">Loading events...</div>
     <div v-else class="events-grid">
-      <EventCard v-for="event in eventStore.events" :key="event.id" :event="event" />
+      <EventCard
+        v-for="event in eventStore.events"
+        :key="event.id"
+        :event="event"
+        @open-card="$emit('open-card', event)"
+      />
     </div>
   </div>
 </template>

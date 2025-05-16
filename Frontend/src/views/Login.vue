@@ -1,9 +1,9 @@
 <template>
   <div class="login-container">
     <el-card class="login-card">
-      <h2>登录</h2>
+      <h2>Login</h2>
       <el-button type="primary" @click="handleGoogleLogin" class="google-btn">
-        使用 Google 账号登录
+        Login with Google
       </el-button>
     </el-card>
   </div>
@@ -21,7 +21,7 @@ const handleGoogleLogin = async () => {
     await userStore.loginWithGoogle()
     router.push('/')
   } catch (error) {
-    console.error('登录失败:', error)
+    console.error('Login failed:', error)
   }
 }
 </script>

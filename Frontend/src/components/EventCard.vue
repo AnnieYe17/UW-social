@@ -1,69 +1,35 @@
 <template>
-  <div class="card event-card">
-    <img :src="event.imageUrl ? event.imageUrl : 'public/images/default-event.jpg'" alt="event.title" />
+  <div class="card event-card" @click="handleCardClick">
+    <img :src="event.imageUrl ? event.imageUrl : '/images/default-event.jpg'" alt="event.title" />
     <h3>{{ event.title }}</h3>
-    <p>📅 Date: {{ formatDate(event.date) }}</p>
-    <p>📍 Location: {{ event.location }}</p>
-    <p>{{ event.description }}</p>
-    <div class="card-buttons">
-      <button 
-        class="join-btn" 
-        @click="handleJoin"
-        :disabled="isFull || isParticipant"
-      >
-        {{ getButtonText }}
-      </button>
-      <button class="review-btn" @click="goToReview(event.id)">Review</button>
-    </div>
+    <p>📅 {{ formatDate(event.date) }}</p>
+    <p>📍 {{ event.location }}</p>
+    <p class="description">{{ event.description }}</p>
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
-import { useUserStore } from '../stores/user'
-import type { Event } from '../types/event'
+import { useEventDialogStore } from '@/stores/eventDialog';
+import type { Event } from '../types/event';
 
 const props = defineProps<{
-  event: Event
+  event: Event;
 }>();
 
-const userStore = useUserStore()
-
-const isParticipant = computed(() => {
-  return Array.isArray(props.event?.participants) &&
-         props.event.participants.includes(userStore.userProfile?.uid || '');
-})
-
-const isFull = computed(() => {
-  return props.event.maxParticipants !== undefined &&
-         props.event.maxParticipants !== null &&
-         Array.isArray(props.event.participants) &&
-         props.event.participants.length >= props.event.maxParticipants;
-});
-
-const getButtonText = computed(() => {
-  if (isFull.value) return 'Full'
-  if (isParticipant.value) return 'Joined'
-  return 'Quickly Join in'
-})
+const eventDialogStore = useEventDialogStore();
 
 const formatDate = (date: string) => {
   return new Date(date).toLocaleDateString('zh-CN', {
     year: 'numeric',
     month: 'long',
-    day: 'numeric'
-  })
-}
+    day: 'numeric',
+  });
+};
 
-const handleJoin = async () => {
-  if (isFull.value) return
-  console.log('Joining event...')
-  // TODO: 执行加入活动逻辑
-}
-
-const goToReview = (eventId: string) => {
-  // TODO: 实现查看详情的逻辑
-}
+const handleCardClick = () => {
+  console.log('Card clicked:', props.event);
+  eventDialogStore.openDialog(props.event);
+};
 </script>
 
 <style scoped>
@@ -74,11 +40,13 @@ const goToReview = (eventId: string) => {
   padding: 20px;
   margin: 15px;
   width: 300px;
-  transition: transform 0.2s;
+  transition: transform 0.2s, box-shadow 0.2s;
+  cursor: pointer;
 }
 
 .card:hover {
-  transform: translateY(-5px);
+  transform: scale(1.05);
+  box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
 }
 
 .event-card img {
@@ -101,41 +69,12 @@ const goToReview = (eventId: string) => {
   font-size: 0.9em;
 }
 
-.card-buttons {
-  display: flex;
-  gap: 10px;
-  margin-top: 15px;
-}
-
-.join-btn, .review-btn {
-  padding: 8px 16px;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  font-weight: bold;
-  transition: background-color 0.2s;
-}
-
-.join-btn {
-  background-color: #b388eb;
-  color: white;
-}
-
-.join-btn:hover {
-  background-color: #9c6ad6;
-}
-
-.join-btn:disabled {
-  background-color: #ccc;
-  cursor: not-allowed;
-}
-
-.review-btn {
-  background-color: #f0f0f0;
-  color: #333;
-}
-
-.review-btn:hover {
-  background-color: #e0e0e0;
+.event-card .description {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 3; /* Limit to 3 lines */
+  -webkit-box-orient: vertical;
+  height: 4.5em; /* Adjust based on font size and line height */
 }
 </style>

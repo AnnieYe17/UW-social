@@ -1,25 +1,46 @@
 <template>
   <div class="events-page">
     <div class="events-header">
-      <h1>Event List🔥</h1>
+      <h2>Event List🔥</h2>
       <router-link to="/publish" class="publish-btn">
-        <span class="icon">🚀</span>
-        Publish new event
+        <!-- <span class="icon">🚀</span> -->
+        🚀 Publish new event
       </router-link>
     </div>
-    <EventList />
+    <!-- 监听 open-card 事件 -->
+    <EventList @open-card="openCard" />
+
+    <!-- 弹窗 -->
+    <ElDialog v-model="isDialogOpen" title="Event Details" class="custom-dialog">
+      <DetailCard v-if="selectedEvent" :event="selectedEvent" />
+    </ElDialog>
   </div>
 </template>
 
 <script setup lang="ts">
+import { ref, watch } from 'vue';
 import EventList from '../components/EventList.vue';
+import DetailCard from '../components/DetailCard.vue';
+
+const isDialogOpen = ref(false);
+const selectedEvent = ref(null);
+
+const openCard = (event) => {
+  console.log('Event received in openCard:', event); // 添加日志以确认事件接收
+  selectedEvent.value = event;
+  isDialogOpen.value = true;
+};
+
+watch(selectedEvent, (newValue) => {
+  console.log('Selected Event:', newValue);
+});
 </script>
 
 <style scoped>
 .events-page {
   padding: 0rem;
-  margin-top: 50px;
-  margin-left:100px;
+  margin-top: 0px;
+  margin-left: 0px;
   min-height: calc(100vh - 100px);
   background: #f5f5f5;
 }
@@ -61,4 +82,12 @@ h1 {
 .icon {
   font-size: 1.2rem;
 }
-</style> 
+
+.custom-dialog {
+  max-width: 600px;
+  background: white;
+  border-radius: 10px;
+  padding: 20px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+</style>
