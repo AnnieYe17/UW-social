@@ -9,7 +9,7 @@
 </template>
 
 <script setup lang="ts">
-import { useEventDialogStore } from '@/stores/eventDialog';
+import { useEventDialogStore } from '../stores/eventDialog';
 import type { Event } from '../types/event';
 
 const props = defineProps<{

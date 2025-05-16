@@ -14,7 +14,7 @@
 
 <script setup lang="ts">
 import Navbar from './components/Navbar.vue';
-import { useEventDialogStore } from '@/stores/eventDialog.ts';
+import { useEventDialogStore } from './stores/eventDialog.ts';
 import DetailCard from '@/components/DetailCard.vue';
 
 const eventDialogStore = useEventDialogStore();

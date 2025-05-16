@@ -25,7 +25,7 @@ import DetailCard from '../components/DetailCard.vue';
 const isDialogOpen = ref(false);
 const selectedEvent = ref(null);
 
-const openCard = (event) => {
+const openCard = (event: null) => {
   console.log('Event received in openCard:', event); // 添加日志以确认事件接收
   selectedEvent.value = event;
   isDialogOpen.value = true;
