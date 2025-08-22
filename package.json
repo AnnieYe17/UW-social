@@ -16,5 +16,14 @@
   "bugs": {
     "url": "https://github.com/AnnieYe17/UW-social/issues"
   },
-  "homepage": "https://github.com/AnnieYe17/UW-social#readme"
+  "homepage": "https://github.com/AnnieYe17/UW-social#readme",
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^5.2.4"
+  },
+  "dependencies": {
+    "element-plus": "^2.11.0",
+    "firebase": "^12.1.0",
+    "vue": "^3.5.19",
+    "vue-router": "^4.5.1"
+  }
 }
